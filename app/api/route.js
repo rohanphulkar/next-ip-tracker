@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 export const POST = async (req, res) => {
   try {
-    const { name, email, phone, ip, city, country } = await req.json();
+    const { name, email, phone, ip, city, country, deviceType } =
+      await req.json();
 
     const emailMessage = `
         A new inquiry has been received:
@@ -13,6 +14,7 @@ export const POST = async (req, res) => {
         IP: ${ip}
         City: ${city}
         Country: ${country}
+        Device Type: ${deviceType}
         `;
     const mailTransporter = nodemailer.createTransport({
       service: process.env.EMAIL_HOST,

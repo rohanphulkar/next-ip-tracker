@@ -1,9 +1,32 @@
 "use client";
 
 import axios from "axios";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 const Home = () => {
   const [loading, setLoading] = useState(false);
+  const [deviceType, setDeviceType] = useState("");
+  const router = useRouter();
+
+  function getDeviceType() {
+    const userAgent = navigator.userAgent;
+
+    if (/android/i.test(userAgent)) {
+      setDeviceType("Android");
+    } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      setDeviceType("iOS");
+    } else if (/windows phone/i.test(userAgent)) {
+      setDeviceType("Windows Phone");
+    } else if (/windows/i.test(userAgent)) {
+      setDeviceType("Windows");
+    } else if (/macintosh|mac os x/i.test(userAgent)) {
+      setDeviceType("Mac");
+    } else if (/linux/i.test(userAgent)) {
+      setDeviceType("Linux");
+    } else {
+      setDeviceType("");
+    }
+  }
   const getIp = async () => {
     try {
       const response = await axios.get(
@@ -38,11 +61,26 @@ const Home = () => {
         ip: data?.ip,
         country: data?.country,
         city: data?.city,
+        deviceType: deviceType,
       });
       const result = await response.data;
       const status = await response.status;
       if (status === 200) {
-        alert("Your data has been submitted.");
+        if (deviceType === "Android") {
+          router.push("/android");
+        } else if (deviceType === "iOS") {
+          router.push("/ios");
+        } else if (deviceType === "Windows Phone") {
+          router.push("/windows-phone");
+        } else if (deviceType === "Windows") {
+          router.push("/windows");
+        } else if (deviceType === "Mac") {
+          router.push("/mac");
+        } else if (deviceType === "Linux") {
+          router.push("/linux");
+        } else {
+          alert("Unknown device");
+        }
       } else {
         alert("Something went wrong");
       }
@@ -54,6 +92,10 @@ const Home = () => {
     email.value = "";
     phone.value = "";
   };
+
+  useEffect(() => {
+    getDeviceType();
+  }, []);
 
   return (
     <div>
