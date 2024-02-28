@@ -53,7 +53,7 @@ const Home = () => {
     try {
       setLoading(true);
       const data = await getIp();
-      var { name, email, phone } = e.target;
+      var { name, email, phone, issue } = e.target;
       const response = await axios.post("/api/", {
         name: name.value,
         email: email.value,
@@ -62,6 +62,7 @@ const Home = () => {
         country: data?.country,
         city: data?.city,
         deviceType: deviceType,
+        issue: issue.value,
       });
       const result = await response.data;
       const status = await response.status;
