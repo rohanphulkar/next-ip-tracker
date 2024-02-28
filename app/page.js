@@ -102,9 +102,7 @@ const Home = () => {
       <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
-            <h2 className="text-xl text-gray-800 font-bold sm:text-3xl">
-              Post a comment
-            </h2>
+            <img src="/logo.png" width={128} height={128} className="mx-auto" />
           </div>
           {/* Card */}
           <div className="mt-5 p-4 relative z-10 bg-white border rounded-xl sm:mt-10 md:p-10">
@@ -157,7 +155,23 @@ const Home = () => {
                   required
                 />
               </div>
-
+              <div className="mb-4 sm:mb-8">
+                <label
+                  htmlFor="issue"
+                  className="block mb-2 text-sm font-medium"
+                >
+                  Issues
+                </label>
+                <textarea
+                  type="email"
+                  id="issue"
+                  name="issue"
+                  className="py-3 px-4 block border focus:outline-none w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Enter your issues...."
+                  rows={5}
+                  required
+                ></textarea>
+              </div>
               <div className="mt-6 grid">
                 <button
                   type="submit"
@@ -170,7 +184,11 @@ const Home = () => {
                     ></span>
                   )}
                 </button>
-              </div>
+              </div>{" "}
+              <p className="mt-4 text-sm text-center">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut,
+                harum soluta consequuntur eius ea incidunt.
+              </p>
             </form>
           </div>
           {/* End Card */}
