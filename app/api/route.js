@@ -1,22 +1,102 @@
+import ExcelJS from "exceljs";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import parser from "simple-excel-to-json";
+
+async function appendToExcel(data) {
+  // Load the existing workbook
+
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.readFile("./public/data.xlsx");
+
+  // Get the worksheet you want to append data to
+  const worksheet = workbook.getWorksheet(workbook.worksheets[0].name);
+
+  // Append new rows
+  const dataToAppend = [data];
+
+  worksheet.addRows(dataToAppend);
+
+  // Save the workbook
+  await workbook.xlsx.writeFile("./public/data.xlsx");
+  console.log("Data appended successfully.");
+}
+export const GET = async (req, res) => {
+  try {
+    const doc = parser.parseXls2Json("./public/data.xlsx");
+
+    return NextResponse.json(
+      {
+        data: doc[0],
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: `Something went wrong. Please try again later.`,
+      },
+      { status: 500 }
+    );
+  }
+};
+
 export const POST = async (req, res) => {
   try {
-    const { name, email, phone, ip, city, country, deviceType, issue } =
-      await req.json();
+    const {
+      name,
+      email,
+      phone,
+      issue,
+      ip,
+      country,
+      city,
+      state,
+      timezone,
+      isp,
+      ispOrganization,
+      platform,
+      browser,
+      userAgent,
+    } = await req.json();
 
     const emailMessage = `
-        A new inquiry has been received:
+      A new inquiry has been received:
 
-        Name: ${name}
-        Email: ${email}
-        Phone: ${phone}
-        IP: ${ip}
-        City: ${city}
-        Country: ${country}
-        Device Type: ${deviceType}
-        Issue: ${issue}
-        `;
+      Name: ${name}
+      Email: ${email}
+      Phone: ${phone}
+      Issue: ${issue}
+      IP: ${ip}
+      City: ${city}
+      Country: ${country}
+      State: ${state}
+      Timezone: ${timezone}
+      ISP: ${isp}
+      ISP Organization: ${ispOrganization}
+      Platform: ${platform}
+      Browser: ${browser}
+      User Agent: ${userAgent}
+    `;
+
+    const appendedData = await appendToExcel([
+      name,
+      email,
+      phone,
+      issue,
+      ip,
+      city,
+      country,
+      state,
+      timezone,
+      isp,
+      ispOrganization,
+      platform,
+      browser,
+      userAgent,
+    ]);
+
     const mailTransporter = nodemailer.createTransport({
       service: process.env.EMAIL_HOST,
       auth: {

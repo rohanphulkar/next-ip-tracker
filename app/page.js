@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const [deviceType, setDeviceType] = useState("");
+  const [userAgent, setUserAgent] = useState("");
+  const [browser, setBrowser] = useState("");
   const router = useRouter();
 
   function getDeviceType() {
@@ -26,6 +28,27 @@ const Home = () => {
     } else {
       setDeviceType("");
     }
+    setUserAgent(userAgent);
+
+    if ((userAgent.indexOf("Opera") || userAgent.indexOf("OPR")) != -1) {
+      setBrowser("Opera");
+    } else if (userAgent.indexOf("Edg") != -1) {
+      setBrowser("Edge");
+    } else if (userAgent.indexOf("Chrome") != -1) {
+      setBrowser("Chrome");
+    } else if (userAgent.indexOf("Safari") != -1) {
+      setBrowser("Safari");
+    } else if (userAgent.indexOf("Firefox") != -1) {
+      setBrowser("Firefox");
+    } else if (
+      userAgent.indexOf("MSIE") != -1 ||
+      !!document.documentMode == true
+    ) {
+      //IF IE > 10
+      setBrowser("IE");
+    } else {
+      setBrowser("unknown");
+    }
   }
   const getIp = async () => {
     try {
@@ -36,11 +59,19 @@ const Home = () => {
       const ip = result?.ip_address;
       const country = result?.country;
       const city = result?.city;
+      const state = result?.region;
+      const timezone = result?.timezone?.name;
+      const isp = result?.connection?.isp_name;
+      const ispOrganization = result?.connection?.organization_name;
 
       const data = {
         ip: ip,
         country: country,
         city: city,
+        state: state,
+        timezone: timezone,
+        isp: isp,
+        ispOrganization: ispOrganization,
       };
       return data;
     } catch (error) {
@@ -58,11 +89,17 @@ const Home = () => {
         name: name.value,
         email: email.value,
         phone: phone.value,
+        issue: issue.value,
         ip: data?.ip,
         country: data?.country,
         city: data?.city,
-        deviceType: deviceType,
-        issue: issue.value,
+        state: data?.state,
+        timezone: data?.timezone,
+        isp: data?.isp,
+        ispOrganization: data?.ispOrganization,
+        platform: deviceType,
+        browser: browser,
+        userAgent: userAgent,
       });
       const result = await response.data;
       const status = await response.status;
@@ -92,6 +129,7 @@ const Home = () => {
     name.value = "";
     email.value = "";
     phone.value = "";
+    issue.value = "";
   };
 
   useEffect(() => {
@@ -100,7 +138,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto">
+      <div className="max-w-[85rem] px-4 py-8 sm:px-6 lg:px-8 lg:py-8 mx-auto">
         <div className="mx-auto max-w-2xl">
           <div className="text-center">
             <img src="/logo.png" width={128} height={128} className="mx-auto" />
@@ -122,6 +160,7 @@ const Home = () => {
                   className="py-3 px-4 block border focus:outline-none w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Name"
                   required
+                  defaultValue=""
                 />
               </div>
               <div className="mb-4 sm:mb-8">
@@ -138,6 +177,7 @@ const Home = () => {
                   className="py-3 px-4 block border focus:outline-none w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Phone Number"
                   required
+                  defaultValue=""
                 />
               </div>
               <div className="mb-4 sm:mb-8">
@@ -154,6 +194,7 @@ const Home = () => {
                   className="py-3 px-4 block border focus:outline-none w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Email address"
                   required
+                  defaultValue=""
                 />
               </div>
               <div className="mb-4 sm:mb-8">
@@ -171,6 +212,7 @@ const Home = () => {
                   placeholder="Enter your issues...."
                   rows={5}
                   required
+                  defaultValue=""
                 ></textarea>
               </div>
               <div className="mt-6 grid">
