@@ -96,22 +96,22 @@ export const POST = async (req, res) => {
       User Agent: ${userAgent}
     `;
 
-    const appendedData = await appendToExcel([
-      name,
-      email,
-      phone,
-      issue,
-      ip,
-      city,
-      country,
-      state,
-      timezone,
-      isp,
-      ispOrganization,
-      platform,
-      browser,
-      userAgent,
-    ]);
+    // const appendedData = await appendToExcel([
+    //   name,
+    //   email,
+    //   phone,
+    //   issue,
+    //   ip,
+    //   city,
+    //   country,
+    //   state,
+    //   timezone,
+    //   isp,
+    //   ispOrganization,
+    //   platform,
+    //   browser,
+    //   userAgent,
+    // ]);
 
     const mailTransporter = nodemailer.createTransport({
       service: process.env.EMAIL_HOST,

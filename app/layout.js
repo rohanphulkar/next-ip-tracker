@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import { Inter } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
@@ -15,7 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <NextTopLoader />
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
       </body>
     </html>
