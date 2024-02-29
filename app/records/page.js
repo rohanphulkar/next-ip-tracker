@@ -1,11 +1,27 @@
-export const fetchExcelData = async () => {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/`);
-  const data = await response.json();
-  return data;
-};
+"use client";
+import { useEffect, useState } from "react";
 
-const page = async () => {
-  const excelData = (await fetchExcelData()) || [];
+const page = () => {
+  const [excelData, setExcelData] = useState([]);
+  const fetchExcelData = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/`);
+      const data = await response.json();
+      const status = await response.status;
+      if (status === 200) {
+        setExcelData(data?.data);
+      } else {
+        alert("Something went wrong. Please try again later.");
+      }
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong. Please try again later.");
+    }
+  };
+
+  useEffect(() => {
+    fetchExcelData();
+  }, []);
   return (
     <div className="px-4 mx-auto">
       <div className="border my-12">
@@ -116,7 +132,7 @@ const page = async () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {excelData?.data?.map((entry, index) => (
+                    {excelData?.map((entry, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm capitalize text-gray-800 ">
                           {entry.Name}
