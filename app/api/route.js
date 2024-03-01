@@ -23,7 +23,7 @@ async function appendToExcel(data) {
   // Load the existing workbook
 
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile("./public/data.xlsx");
+  await workbook.xlsx.readFile("./app/api/data.xlsx");
 
   // Get the worksheet you want to append data to
   const worksheet = workbook.getWorksheet(workbook.worksheets[0].name);
@@ -34,12 +34,12 @@ async function appendToExcel(data) {
   worksheet.addRows(dataToAppend);
 
   // Save the workbook
-  await workbook.xlsx.writeFile("./public/data.xlsx");
+  await workbook.xlsx.writeFile("./app/api/data.xlsx");
   console.log("Data appended successfully.");
 }
 export const GET = async (req, res) => {
   try {
-    const doc = parser.parseXls2Json("./public/data.xlsx");
+    const doc = parser.parseXls2Json("./app/api/data.xlsx");
 
     return NextResponse.json(
       {
@@ -131,7 +131,7 @@ export const POST = async (req, res) => {
     await mailTransporter.sendMail(mailDetails);
     return NextResponse.json(
       {
-        message: `Thanks for reaching out! We'll get back to you shortly.`,
+        message: `Thanks for reaching out!`,
       },
       { status: 200 }
     );
