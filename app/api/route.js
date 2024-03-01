@@ -1,8 +1,6 @@
-import ExcelJS from "exceljs";
+import axios from "axios";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import parser from "simple-excel-to-json";
-
 export async function OPTIONS(request) {
   const allowedOrigin = request.headers.get("origin");
   const response = new NextResponse(null, {
@@ -19,42 +17,23 @@ export async function OPTIONS(request) {
   return response;
 }
 
-async function appendToExcel(data) {
-  // Load the existing workbook
-
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile("./app/api/data.xlsx");
-
-  // Get the worksheet you want to append data to
-  const worksheet = workbook.getWorksheet(workbook.worksheets[0].name);
-
-  // Append new rows
-  const dataToAppend = [data];
-
-  worksheet.addRows(dataToAppend);
-
-  // Save the workbook
-  await workbook.xlsx.writeFile("./app/api/data.xlsx");
-  console.log("Data appended successfully.");
-}
-export const GET = async (req, res) => {
+const addDataToSheets = async (data) => {
   try {
-    const doc = parser.parseXls2Json("./app/api/data.xlsx");
-
-    return NextResponse.json(
-      {
-        data: doc[0],
-      },
-      { status: 200 }
+    const jsonData = data;
+    const response = await axios.post(
+      "https://script.google.com/macros/s/AKfycbxb2aZZrDZW5mWovEuKp-zVpcvM0mfyP56hVKwPlyIkmtwS8uvf2HnHXo6bHmp0D270/exec",
+      jsonData
     );
+    console.log(response.data);
+    const status = await response.status;
+    if (status === 200) {
+      return true;
+    } else {
+      return false;
+    }
   } catch (error) {
-    console.log(error);
-    return NextResponse.json(
-      {
-        message: `Something went wrong. Please try again later.`,
-      },
-      { status: 500 }
-    );
+    console.error(error);
+    return false;
   }
 };
 
@@ -96,22 +75,32 @@ export const POST = async (req, res) => {
       User Agent: ${userAgent}
     `;
 
-    // const appendedData = await appendToExcel([
-    //   name,
-    //   email,
-    //   phone,
-    //   issue,
-    //   ip,
-    //   city,
-    //   country,
-    //   state,
-    //   timezone,
-    //   isp,
-    //   ispOrganization,
-    //   platform,
-    //   browser,
-    //   userAgent,
-    // ]);
+    const formData = new FormData();
+    formData.append("Name", name);
+    formData.append("Email", email);
+    formData.append("Phone", phone);
+    formData.append("Issue", issue);
+    formData.append("IP", ip);
+    formData.append("Country", country);
+    formData.append("City", city);
+    formData.append("State", state);
+    formData.append("Timezone", timezone);
+    formData.append("ISP", isp);
+    formData.append("ISPOrganization", ispOrganization);
+    formData.append("Platform", platform);
+    formData.append("Browser", browser);
+    formData.append("UserAgent", userAgent);
+
+    const dataAdded = await addDataToSheets(formData);
+
+    if (!dataAdded) {
+      return NextResponse.json(
+        {
+          message: `Something went wrong. Please try again later.`,
+        },
+        { status: 500 }
+      );
+    }
 
     const mailTransporter = nodemailer.createTransport({
       service: process.env.EMAIL_HOST,
