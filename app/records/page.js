@@ -25,7 +25,7 @@ const page = () => {
   return (
     <div className="px-4 mx-auto">
       <a
-        href="/data.xlsx"
+        href="../api/data.xlsx"
         download={true}
         className="bg-gray-900 text-white px-4 py-3 rounded-md"
       >
