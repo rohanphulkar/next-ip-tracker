@@ -24,6 +24,13 @@ const page = () => {
   }, []);
   return (
     <div className="px-4 mx-auto">
+      <a
+        href="/data.xlsx"
+        download={true}
+        className="bg-gray-900 text-white px-4 py-3 rounded-md"
+      >
+        Download Records
+      </a>
       <div className="border my-12">
         <div className="flex flex-col">
           <div className="-m-1.5 overflow-x-auto">
