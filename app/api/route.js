@@ -21,7 +21,7 @@ const addDataToSheets = async (data) => {
   try {
     const jsonData = data;
     const response = await axios.post(
-      "https://script.google.com/macros/s/AKfycbxb2aZZrDZW5mWovEuKp-zVpcvM0mfyP56hVKwPlyIkmtwS8uvf2HnHXo6bHmp0D270/exec",
+      "https://script.google.com/macros/s/AKfycbzhUuFj5sy5RFTOy__d7JYn3q3VjCE9rgp-KyuWTDd0wa2QMq7RdJJhLZ8N0UAZ_qs_Yg/exec",
       jsonData
     );
     console.log(response.data);
